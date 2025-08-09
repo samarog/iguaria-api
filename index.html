@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iguaria API – Developer Documentation</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #0f162d;
+    --panel-2: #141c35;
+    --text: #e8ecff;
+    --muted: #a0a8c0;
+    --brand: #7aa2ff;
+    --brand-2: #4f7cff;
+    --ok: #2fd77e;
+    --warn: #ffc861;
+    --err: #ff5d73;
+    --code: #0b142a;
+    --border: #22305b;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg), #0a0f1d 60%);
+    color: var(--text);
+    font: 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  }
+  a {
+    color: var(--brand);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .wrap {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100dvh;
+  }
+  nav {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100dvh;
+    overflow: auto;
+    padding: 24px 16px;
+    border-right: 1px solid var(--border);
+    background: rgba(16, 24, 48, .6);
+    backdrop-filter: blur(6px);
+  }
+  .logo {
+    font-weight: 800;
+    letter-spacing: .2px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #12204a;
+    color: #c8d4ff;
+    font-size: 12px;
+    border: 1px solid var(--border);
+  }
+  .nav-section {
+    margin-top: 24px;
+  }
+  .nav-section h4 {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: 12px;
+    margin: 0 0 8px;
+  }
+  .nav-section a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: #d9e2ff;
+  }
+  .nav-section a:hover {
+    background: #101832;
+  }
+  main {
+    padding: 32px;
+  }
+  .hero {
+    background: radial-gradient(1200px 400px at 20% -10%, rgba(122, 162, 255, .15), transparent 60%),
+                radial-gradient(900px 300px at 90% 0%, rgba(47, 215, 126, .1), transparent 60%),
+                linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, 0));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+  }
+  .muted {
+    color: var(--muted);
+  }
+  .grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .card h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+  }
+  .kvs {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px 16px;
+  }
+  section {
+    margin-top: 34px;
+  }
+  section h2 {
+    font-size: 22px;
+    margin: 0 0 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th,
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    text-align: left;
+    font-weight: 600;
+    background: var(--panel-2);
+  }
+  tr:nth-child(even) td {
+    background: rgba(255, 255, 255, .02);
+  }
+  .ep-box {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .ep-head {
+    background: var(--panel-2);
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .pill {
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+  }
+  .method {
+    font-weight: 700;
+    letter-spacing: .4px;
+  }
+  .method.get {
+    color: var(--ok);
+  }
+  .status {
+    font-weight: 700;
+  }
+  pre {
+    margin: 0;
+    background: var(--code);
+    padding: 14px;
+    overflow: auto;
+    border-top: 1px solid var(--border);
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+  }
+  .lang {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+  .try {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 12px;
+  }
+  .btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: #11214b;
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background: #0e1a3a;
+  }
+  .alert {
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+  .alert.ok {
+    background: rgba(47, 215, 126, .08);
+    border: 1px solid rgba(47, 215, 126, .35);
+  }
+  .alert.warn {
+    background: rgba(255, 200, 97, .08);
+    border: 1px solid rgba(255, 200, 97, .4);
+  }
+  .alert.err {
+    background: rgba(255, 93, 115, .08);
+    border: 1px solid rgba(255, 93, 115, .35);
+  }
+  footer {
+    color: var(--muted);
+    margin: 32px 0 16px;
+    font-size: 13px;
+  }
+  .copy {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
+  .codebox {
+    position: relative;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <div class="logo">🍽️ Iguaria API <span class="badge">v1.0.0</span></div>
+
+      <div class="nav-section">
+        <h4>Guide</h4>
+        <a href="#overview">Overview</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#auth">Authentication</a>
+      </div>
+      <div class="nav-section">
+        <h4>Reference</h4>
+        <a href="#endpoints">Endpoints</a>
+        <a href="#models">Data Models</a>
+        <a href="#errors">Errors</a>
+      </div>
+      <div class="nav-section">
+        <h4>Resources</h4>
+        <a href="#examples">Code Examples</a>
+        <a href="#changelog">Changelog</a>
+      </div>
+    </nav>
+
+    <main>
+      <header class="hero" id="overview">
+        <h1>Iguaria API</h1>
+        <div class="muted">A minimal REST API for recipes. Fetch all recipes, get one by ID, or filter by ingredients.</div>
+        <div class="grid" style="margin-top:14px">
+          <div class="card">
+            <h3>Base URL</h3>
+            <div class="kvs">
+              <div class="muted">Local</div> <code>http://localhost:4000</code>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Status & Auth</h3>
+            <div class="kvs">
+              <div class="muted">Auth</div> <div>None (public)</div>
+              <div class="muted">Rate limits</div> <div>Not enforced</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Tech</h3>
+            <div class="kvs">
+              <div class="muted">Runtime</div> <div>Node.js + Express</div>
+              <div class="muted">Security</div> <div>Helmet, CORS enabled</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section id="quickstart">
+        <h2>Quickstart</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Run the server</h3>
+            <div class="codebox">
+              <button class="btn copy" data-copy="npm install
+node api.js">Copy</button>
+              <pre><code>$ npm install
+$ node api.js</code></pre>
+            </div>
+            <div class="alert ok" style="margin-top:10px">Server listens on <code>http://localhost:4000</code>.</div>
+          </div>
+          <div class="card">
+            <h3>Health check</h3>
+            <pre><code>GET /recipes</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="auth">
+        <h2>Authentication</h2>
+        <div class="alert warn">No authentication required. All endpoints are public in this demo API.</div>
+      </section>
+
+      <section id="endpoints">
+        <h2>Endpoints</h2>
+
+        <!-- GET /recipes -->
+        <div class="ep-box">
+          <div class="ep-head">
+            <span class="pill method get">GET</span>
+            <code>/recipes</code>
+            <span class="pill">List recipes</span>
+          </div>
+          <div style="padding:14px">
+            <p>Returns all recipes. Optionally filter by one or more ingredients (case-insensitive match on exact ingredient tokens).</p>
+
+            <h3>Query Parameters</h3>
+            <table>
+              <thead>
+                <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>ingredient</code></td><td>string</td><td>No</td><td>Comma-separated list of ingredients to match <em>all</em> of them. Example: <code>?ingredient=eggs,bacon</code></td></tr>
+              </tbody>
+            </table>
+
+            <h3>Examples</h3>
+            <div class="grid">
+              <div class="card">
+                <div class="lang">cURL</div>
+                <div class="codebox">
+                  <button class="btn copy" data-copy="curl -s \'http://localhost:4000/recipes?ingredient=avocado\'">Copy</button>
+                  <pre><code>curl -s "http://localhost:4000/recipes?ingredient=avocado"</code></pre>
+                </div>
+              </div>
+              <div class="card">
+                <div class="lang">JS (fetch)</div>
+                <div class="codebox">
+                  <button class="btn copy" data-copy="fetch('http://localhost:4000/recipes').then(r=>r.json()).then(console.log)">Copy</button>
+                  <pre><code>fetch('http://localhost:4000/recipes')
+  .then(r => r.json())
+  .then(console.log)</code></pre>
+                </div>
+              </div>
+              <div class="card">
+                <div class="lang">Python (requests)</div>
+                <div class="codebox">
+                  <button class="btn copy" data-copy="import requests; print(requests.get('http://localhost:4000/recipes', timeout=10).json())">Copy</button>
+                  <pre><code>import requests
+print(requests.get('http://localhost:4000/recipes', timeout=10).json())</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <h3>Success Response <span class="status">200</span></h3>
+            <pre><code>[
+  {
+    "id": 1,
+    "title": "Spaghetti Carbonara",
+    "ingredients": ["spaghetti", "eggs", "parmesan cheese", "bacon", "black pepper", "salt"],
+    "instructions": "Cook pasta. Mix eggs and cheese. Fry bacon. Combine everything and serve with pepper.",
+    "image": "https://example.com/images/carbonara.jpg",
+    "tags": ["italian", "pasta", "quick"],
+    "author": "Gonçalo Amaro"
+  }
+]</code></pre>
+
+            <h3>Error Response <span class="status">404</span></h3>
+            <pre><code>{ "error": "No recipes with those ingredients" }</code></pre>
+          </div>
+        </div>
+
+        <!-- GET /recipes/:id -->
+        <div class="ep-box">
+          <div class="ep-head">
+            <span class="pill method get">GET</span>
+            <code>/recipes/:id</code>
+            <span class="pill">Get recipe by ID</span>
+          </div>
+          <div style="padding:14px">
+            <h3>Path Parameters</h3>
+            <table>
+              <thead>
+                <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>id</code></td><td>number</td><td>Yes</td><td>Recipe identifier (integer)</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Example</h3>
+            <div class="try">
+              <code>GET http://localhost:4000/recipes/1</code>
+              <button class="btn" data-copy="curl -s http://localhost:4000/recipes/1">Copy cURL</button>
+            </div>
+
+            <h3>Success Response <span class="status">200</span></h3>
+            <pre><code>{
+  "id": 1,
+  "title": "Spaghetti Carbonara",
+  "ingredients": ["spaghetti", "eggs", "parmesan cheese", "bacon", "black pepper", "salt"],
+  "instructions": "Cook pasta. Mix eggs and cheese. Fry bacon. Combine everything and serve with pepper.",
+  "image": "https://example.com/images/carbonara.jpg",
+  "tags": ["italian", "pasta", "quick"],
+  "author": "Gonçalo Amaro"
+}</code></pre>
+
+            <h3>Error Response <span class="status">404</span></h3>
+            <pre><code>{ "error": "Recipe not found" }</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="models">
+        <h2>Data Models</h2>
+        <table>
+          <thead>
+            <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>number</td><td>Unique recipe ID</td></tr>
+            <tr><td><code>title</code></td><td>string</td><td>Recipe name</td></tr>
+            <tr><td><code>ingredients</code></td><td>string[]</td><td>List of ingredients</td></tr>
+            <tr><td><code>instructions</code></td><td>string</td><td>Preparation steps</td></tr>
+            <tr><td><code>image</code></td><td>string</td><td>Image URL</td></tr>
+            <tr><td><code>tags</code></td><td>string[]</td><td>Labels such as cuisine or course</td></tr>
+            <tr><td><code>author</code></td><td>string</td><td>Recipe author</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="errors">
+        <h2>Errors</h2>
+        <p>Errors are returned as JSON with an <code>error</code> string. Typical statuses include:</p>
+        <table>
+          <thead>
+            <tr><th>Status</th><th>When</th><th>Body</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="status">404</span></td><td>Recipe not found or no matches for ingredient filter</td><td><code>{ "error": "..." }</code></td></tr>
+            <tr><td><span class="status">500</span></td><td>Unexpected server error</td><td><code>{ "error": "Internal Server Error" }</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="examples">
+        <h2>Code Examples</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Get all recipes (Node.js)</h3>
+            <div class="codebox">
+              <button class="btn copy" data-copy="import fetch from 'node-fetch';\nconst res = await fetch('http://localhost:4000/recipes');\nconst data = await res.json();\nconsole.log(data);">Copy</button>
+              <pre><code>import fetch from 'node-fetch';
+const res = await fetch('http://localhost:4000/recipes');
+const data = await res.json();
+console.log(data);</code></pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Filter by ingredients (Python)</h3>
+            <div class="codebox">
+              <button class="btn copy" data-copy="import requests\nr = requests.get('http://localhost:4000/recipes', params={'ingredient': 'eggs,bacon'})\nprint(r.status_code, r.json())">Copy</button>
+              <pre><code>import requests
+r = requests.get('http://localhost:4000/recipes', params={'ingredient': 'eggs,bacon'})
+print(r.status_code, r.json())</code></pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Get by ID (cURL)</h3>
+            <div class="codebox">
+              <button class="btn copy" data-copy="curl -s http://localhost:4000/recipes/10 | jq">Copy</button>
+              <pre><code>curl -s http://localhost:4000/recipes/10 | jq</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="changelog">
+        <h2>Changelog</h2>
+        <ul>
+          <li><strong>v1.0.0</strong> – Initial public endpoints: <code>GET /recipes</code>, <code>GET /recipes/:id</code></li>
+        </ul>
+      </section>
+
+      <footer>
+        © 2025 Iguaria API • Built with Express, secured by Helmet & CORS • Demo use only
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // copy-to-clipboard buttons
+    addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-copy]');
+      if (!btn) return;
+      const text = btn.getAttribute('data-copy');
+      navigator.clipboard.writeText(text).then(() => {
+        const prev = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = prev, 1200);
+      });
+    });
+  </script>
+</body>
+</html>
