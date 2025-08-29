@@ -1,4 +1,4 @@
-# 🍽️ Iguaria API
+# Iguaria API
 
 A simple REST API for browsing and retrieving recipes, built with Node.js and Express.
 
